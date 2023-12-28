@@ -1,4 +1,27 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-puts 'Hello, Ray Tracer!'
+IMAGE_WIDTH = 256
+IMAGE_HEIGHT = 256
+
+if __FILE__ == $PROGRAM_NAME
+  print <<~HEADER
+    P3
+    #{IMAGE_WIDTH} #{IMAGE_HEIGHT}
+    255
+  HEADER
+
+  IMAGE_HEIGHT.times do |j|
+    IMAGE_WIDTH.times do |i|
+      r = i.to_f / (IMAGE_WIDTH - 1)
+      g = j.to_f / (IMAGE_HEIGHT - 1)
+      b = 0
+
+      ir = (255.999 * r).to_i
+      ig = (255.999 * g).to_i
+      ib = (255.999 * b).to_i
+
+      puts "#{ir} #{ig} #{ib}"
+    end
+  end
+end
