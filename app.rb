@@ -12,6 +12,9 @@ if __FILE__ == $PROGRAM_NAME
   HEADER
 
   IMAGE_HEIGHT.times do |j|
+    $stderr.print "\rScanlines remaining: #{IMAGE_HEIGHT - j}", ' '
+    $stderr.flush
+
     IMAGE_WIDTH.times do |i|
       r = i.to_f / (IMAGE_WIDTH - 1)
       g = j.to_f / (IMAGE_HEIGHT - 1)
@@ -24,4 +27,6 @@ if __FILE__ == $PROGRAM_NAME
       puts "#{ir} #{ig} #{ib}"
     end
   end
+
+  warn "\rDone.                 \n"
 end
