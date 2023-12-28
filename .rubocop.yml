@@ -9,8 +9,13 @@
 #
 # See https://docs.rubocop.org/rubocop/configuration
 
+require:
+  - rubocop-rspec
+
 AllCops:
   NewCops: enable
+  Exclude:
+    - bin/**/*
 
 Naming/MethodParameterName:
   Enabled: false
