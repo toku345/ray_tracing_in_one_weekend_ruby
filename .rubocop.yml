@@ -17,6 +17,7 @@ AllCops:
   Exclude:
     - bin/**/*
     - vendor/bundle/ruby/**/*
+    - vendor/bundle/truffleruby/**/*
 
 Naming/MethodParameterName:
   Enabled: false
