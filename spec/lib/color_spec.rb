@@ -14,7 +14,7 @@ RSpec.describe Color do
     it 'puts the color to IO' do
       color = described_class.new(0.5, 0.5, 0.5)
 
-      color.write_color(input)
+      write_color(input, color)
       expect(input).to have_received(:puts).with('127 127 127')
     end
   end

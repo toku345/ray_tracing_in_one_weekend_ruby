@@ -3,16 +3,16 @@
 
 require_relative 'vec3'
 
-class Color < Vec3
-  extend T::Sig
+extend T::Sig # rubocop:disable Style/MixinUsage
 
-  sig { params(input: IO).void }
-  def write_color(input)
-    # Write the translated [0,255] value of each color component.
-    ir = (255.999 * x).to_i
-    ig = (255.999 * y).to_i
-    ib = (255.999 * z).to_i
+Color = Vec3
 
-    input.puts "#{ir} #{ig} #{ib}"
-  end
+sig { params(input: IO, color: Color).void }
+def write_color(input, color)
+  # Write the translated [0,255] value of each color component.
+  ir = (255.999 * color.x).to_i
+  ig = (255.999 * color.y).to_i
+  ib = (255.999 * color.z).to_i
+
+  input.puts "#{ir} #{ig} #{ib}"
 end
