@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+# typed: true
+
+require_relative 'lib/vec3'
+require_relative 'lib/color'
 
 IMAGE_WIDTH = 256
 IMAGE_HEIGHT = 256
@@ -16,15 +20,8 @@ if __FILE__ == $PROGRAM_NAME
     $stderr.flush
 
     IMAGE_WIDTH.times do |i|
-      r = i.to_f / (IMAGE_WIDTH - 1)
-      g = j.to_f / (IMAGE_HEIGHT - 1)
-      b = 0
-
-      ir = (255.999 * r).to_i
-      ig = (255.999 * g).to_i
-      ib = (255.999 * b).to_i
-
-      puts "#{ir} #{ig} #{ib}"
+      pixel_color = Color.new(i.to_f / (IMAGE_WIDTH - 1), j.to_f / (IMAGE_HEIGHT - 1), 0.0)
+      pixel_color.write_color($stdout)
     end
   end
 
