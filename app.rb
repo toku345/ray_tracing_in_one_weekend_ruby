@@ -8,9 +8,11 @@ require_relative 'lib/vec3'
 
 extend T::Sig # rubocop:disable Style/MixinUsage
 
-sig { params(_r: Ray).returns(Color) }
-def ray_color(_r)
-  Color.new(0.0, 0.0, 0.0)
+sig { params(r: Ray).returns(Color) }
+def ray_color(r)
+  unit_direction = r.direction.unit_vector
+  a = 0.5 * (unit_direction.y + 1.0)
+  (1.0 - a).multiple_with_vec3(Color.new(1.0, 1.0, 1.0)) + a.multiple_with_vec3(Color.new(0.5, 0.7, 1.0))
 end
 
 if __FILE__ == $PROGRAM_NAME
@@ -59,7 +61,7 @@ if __FILE__ == $PROGRAM_NAME
       r = Ray.new(camera_center, ray_direction)
 
       pixel_color = ray_color(r)
-      pixel_color.write_color($stdout)
+      write_color($stdout, pixel_color)
     end
   end
 
