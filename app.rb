@@ -15,14 +15,14 @@ module App
     sig { params(center: Point3, radius: Float, r: Ray).returns(Float) }
     def hit_sphere(center, radius, r) # rubocop:disable Metrics/AbcSize
       oc = r.origin - center
-      a = r.direction.dot(r.direction)
-      b = 2.0 * oc.dot(r.direction)
-      c = oc.dot(oc) - (radius * radius)
-      discriminant = (b * b) - (4 * a * c)
+      a = r.direction.length_squared
+      half_b = oc.dot(r.direction)
+      c = oc.length_squared - (radius * radius)
+      discriminant = (half_b * half_b) - (a * c)
 
       return -1.0 if discriminant.negative?
 
-      (-b - Math.sqrt(discriminant)) / (2.0 * a)
+      (-half_b - Math.sqrt(discriminant)) / a
     end
 
     sig { params(r: Ray).returns(Color) }
