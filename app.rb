@@ -12,19 +12,26 @@ module App
   class << self
     extend T::Sig
 
-    sig { params(center: Point3, radius: Float, r: Ray).returns(T::Boolean) }
-    def hit_sphere(center, radius, r)
+    sig { params(center: Point3, radius: Float, r: Ray).returns(Float) }
+    def hit_sphere(center, radius, r) # rubocop:disable Metrics/AbcSize
       oc = r.origin - center
       a = r.direction.dot(r.direction)
       b = 2.0 * oc.dot(r.direction)
       c = oc.dot(oc) - (radius * radius)
       discriminant = (b * b) - (4 * a * c)
-      discriminant >= 0
+
+      return -1.0 if discriminant.negative?
+
+      (-b - Math.sqrt(discriminant)) / (2.0 * a)
     end
 
     sig { params(r: Ray).returns(Color) }
-    def ray_color(r)
-      return Color.new(1.0, 0.0, 0.0) if hit_sphere(Point3.new(0.0, 0.0, -1.0), 0.5, r)
+    def ray_color(r) # rubocop:disable Metrics/AbcSize
+      t = hit_sphere(Point3.new(0.0, 0.0, -1.0), 0.5, r)
+      if t > 0.0
+        n = (r.at(t) - Vec3.new(0.0, 0.0, -1.0)).unit_vector
+        return 0.5.multiple_with_vec3(Color.new(n.x + 1, n.y + 1, n.z + 1))
+      end
 
       unit_direction = r.direction.unit_vector
       a = 0.5 * (unit_direction.y + 1.0)
