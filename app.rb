@@ -51,7 +51,8 @@ if __FILE__ == $PROGRAM_NAME
   pixel_delta_v = viewport_v / image_height.to_f
 
   # Calculate the location of the upper left pixel.
-  viewport_upper_left = camera_center - Vec3.new(0.0, 0.0, focal_legth) - (viewport_u / 2.0) + (viewport_v / 2.0)
+  viewport_upper_left =
+    camera_center - Vec3.new(0.0, 0.0, focal_legth) - (viewport_u / 2.0) - (viewport_v / 2.0)
   pixel100_loc = viewport_upper_left + 0.5.multiple_with_vec3(pixel_delta_u + pixel_delta_v)
 
   # Render
@@ -68,7 +69,7 @@ if __FILE__ == $PROGRAM_NAME
 
     image_width.times do |i|
       pixel_center =
-        pixel100_loc + i.to_f.multiple_with_vec3(pixel_delta_u) - j.to_f.multiple_with_vec3(pixel_delta_v)
+        pixel100_loc + i.to_f.multiple_with_vec3(pixel_delta_u) + j.to_f.multiple_with_vec3(pixel_delta_v)
       ray_direction = pixel_center - camera_center
       r = Ray.new(camera_center, ray_direction)
 
