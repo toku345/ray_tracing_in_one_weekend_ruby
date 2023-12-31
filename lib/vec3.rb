@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# typed: true
+# typed: strict
 
 require_relative 'float'
 
@@ -10,7 +10,7 @@ class Vec3
 
   sig { params(e0: Float, e1: Float, e2: Float).void }
   def initialize(e0 = 0.0, e1 = 0.0, e2 = 0.0)
-    @e = [e0, e1, e2]
+    @e = T.let([e0, e1, e2], [Float, Float, Float])
   end
 
   sig { returns(Float) }
@@ -43,7 +43,7 @@ class Vec3
     Vec3.new(-x, -y, -z)
   end
 
-  sig { params(i: Integer).returns(Float) }
+  sig { params(i: Integer).returns(T.nilable(Float)) }
   def [](i)
     @e[i]
   end

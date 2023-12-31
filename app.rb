@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-# typed: true
+# typed: strict
 
 require_relative 'lib/color'
 require_relative 'lib/ray'
