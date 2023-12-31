@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# typed: true
+# typed: strict
 
 require_relative 'vec3'
 require_relative 'ray'
@@ -9,13 +9,24 @@ require 'sorbet-runtime'
 class HitRecord
   extend T::Sig
 
-  attr_accessor :p, :normal, :t, :front_face
+  sig { returns(Point3) }
+  attr_accessor :p
+
+  sig { returns(Vec3) }
+  attr_reader :normal
+
+  sig { returns(Float) }
+  attr_accessor :t
+
+  sig { returns(T.nilable(T::Boolean)) }
+  attr_accessor :front_face
 
   sig { params(p: Point3, normal: Vec3, t: Float).void }
   def initialize(p, normal, t)
     @p = p
     @normal = normal
     @t = t
+    @front_face = T.let(nil, T.nilable(T::Boolean))
   end
 
   sig { params(r: Ray, outward_normal: Vec3).void }
