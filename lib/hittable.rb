@@ -9,13 +9,19 @@ require 'sorbet-runtime'
 class HitRecord
   extend T::Sig
 
-  attr_accessor :p, :normal, :t
+  attr_accessor :p, :normal, :t, :front_face
 
   sig { params(p: Point3, normal: Vec3, t: Float).void }
   def initialize(p, normal, t)
     @p = p
     @normal = normal
     @t = t
+  end
+
+  sig { params(r: Ray, outward_normal: Vec3).void }
+  def set_face_normal(r, outward_normal)
+    @front_face = r.direction.dot(outward_normal).negative?
+    @normal = @front_face ? outward_normal : -outward_normal
   end
 end
 
