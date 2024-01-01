@@ -33,9 +33,9 @@ class Vec3
     "#{x} #{y} #{z}"
   end
 
-  sig { params(other: Vec3).returns(T::Boolean) }
+  sig { params(other: T.nilable(Vec3)).returns(T::Boolean) }
   def ==(other)
-    x == other.x && y == other.y && z == other.z
+    x == other&.x && y == other&.y && z == other&.z
   end
 
   sig { returns(Vec3) }

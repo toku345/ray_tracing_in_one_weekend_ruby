@@ -16,15 +16,15 @@ class Sphere
     @radius = radius
   end
 
-  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float, rec: HitRecord).returns(T::Boolean) }
-  def hit(r, ray_tmin, ray_tmax, rec) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float).returns(T.nilable(HitRecord)) }
+  def hit(r, ray_tmin, ray_tmax) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     oc = r.origin - @center
     a = r.direction.length_squared
     half_b = oc.dot(r.direction)
     c = oc.length_squared - (@radius * @radius)
 
     discriminant = (half_b * half_b) - (a * c)
-    return false if discriminant.negative?
+    return if discriminant.negative?
 
     sqrtd = Math.sqrt(discriminant)
 
@@ -32,14 +32,12 @@ class Sphere
     root = (-half_b - sqrtd) / a
     if root <= ray_tmin || ray_tmax <= root
       root = (-half_b + sqrtd) / a
-      return false if root <= ray_tmin || ray_tmax <= root
+      return if root <= ray_tmin || ray_tmax <= root
     end
 
-    rec.t = root
-    rec.p = r.at(rec.t)
+    rec = HitRecord.new(r.at(root), root)
     outward_normal = (rec.p - @center) / @radius
     rec.set_face_normal(r, outward_normal)
-
-    true
+    rec
   end
 end
