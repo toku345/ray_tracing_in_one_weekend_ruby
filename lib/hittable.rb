@@ -31,6 +31,9 @@ class HitRecord
 
   sig { params(r: Ray, outward_normal: Vec3).void }
   def set_face_normal(r, outward_normal)
+    # Sets the hit record normal vector.
+    # NOTE: the parameter `outward_normal` is assumed to have unit length.
+
     @front_face = r.direction.dot(outward_normal).negative?
     @normal = @front_face ? outward_normal : -outward_normal
   end
