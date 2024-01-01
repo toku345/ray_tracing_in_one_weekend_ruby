@@ -22,7 +22,7 @@ class HitRecord
   attr_accessor :front_face
 
   sig { params(p: Point3, t: Float).void }
-  def initialize(p, t)
+  def initialize(p = Point3.new, t = 0.0)
     @p = p
     @t = t
     @normal = T.let(nil, T.nilable(Vec3))
