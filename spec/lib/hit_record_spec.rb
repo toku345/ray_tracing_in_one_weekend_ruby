@@ -6,7 +6,7 @@ require_relative '../../lib/hittable'
 RSpec.describe HitRecord do
   describe '#set_face_normal' do
     context 'when the ray hits the outside of the sphere' do
-      let(:hit_record) { described_class.new(Point3.new(0.0, 0.0, -0.5), Vec3.new(0.0, 0.0, 1.0), 0.5) }
+      let(:hit_record) { described_class.new(Point3.new(0.0, 0.0, -0.5), 0.5) }
       let(:r) { Ray.new(Point3.new(0.0, 0.0, 0.0), Vec3.new(0.0, 0.0, -1.0)) }
       let(:outward_normal) { Vec3.new(1.0, 1.0, 1.0).unit_vector }
 
@@ -22,7 +22,7 @@ RSpec.describe HitRecord do
     end
 
     context 'when the ray hits the inside of the sphere' do
-      let(:hit_record) { described_class.new(Point3.new(0.0, 0.0, -0.5), Vec3.new(0.0, 0.0, 1.0), 0.5) }
+      let(:hit_record) { described_class.new(Point3.new(0.0, 0.0, -0.5), 0.5) }
       let(:r) { Ray.new(Point3.new(0.0, 0.0, 0.0), Vec3.new(0.0, 0.0, 1.0)) }
       let(:outward_normal) { Vec3.new(1.0, 1.0, 1.0).unit_vector }
 

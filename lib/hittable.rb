@@ -12,7 +12,7 @@ class HitRecord
   sig { returns(Point3) }
   attr_accessor :p
 
-  sig { returns(Vec3) }
+  sig { returns(T.nilable(Vec3)) }
   attr_reader :normal
 
   sig { returns(Float) }
@@ -21,11 +21,11 @@ class HitRecord
   sig { returns(T.nilable(T::Boolean)) }
   attr_accessor :front_face
 
-  sig { params(p: Point3, normal: Vec3, t: Float).void }
-  def initialize(p, normal, t)
+  sig { params(p: Point3, t: Float).void }
+  def initialize(p, t)
     @p = p
-    @normal = normal
     @t = t
+    @normal = T.let(nil, T.nilable(Vec3))
     @front_face = T.let(nil, T.nilable(T::Boolean))
   end
 
