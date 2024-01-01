@@ -37,13 +37,18 @@ class HitRecord
     @front_face = r.direction.dot(outward_normal).negative?
     @normal = @front_face ? outward_normal : -outward_normal
   end
+
+  sig { params(other: HitRecord).returns(T::Boolean) }
+  def ==(other)
+    @p == other.p && @t == other.t && @normal == other.normal && @front_face == other.front_face
+  end
 end
 
 module Hittable
   extend T::Sig
 
-  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float, rec: HitRecord).returns(T::Boolean) }
-  def hit(r, ray_tmin, ray_tmax, rec) # rubocop:disable Lint/UnusedMethodArgument
+  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float).returns(T.nilable(HitRecord)) }
+  def hit(r, ray_tmin, ray_tmax) # rubocop:disable Lint/UnusedMethodArgument
     Kernel.raise 'Not implemented'
   end
 end
