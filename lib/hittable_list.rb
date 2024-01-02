@@ -35,8 +35,11 @@ class HittableList
     rec = T.let(nil, T.nilable(HitRecord))
 
     @objects.each do |object|
-      rec = object.hit(r, ray_tmin, closest_so_far)
-      closest_so_far = rec.t if rec
+      temp_rec = object.hit(r, ray_tmin, closest_so_far)
+      if temp_rec
+        closest_so_far = temp_rec.t
+        rec = temp_rec
+      end
     end
 
     rec

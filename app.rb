@@ -2,36 +2,24 @@
 # frozen_string_literal: true
 # typed: strict
 
+require_relative 'lib/rtweekend'
+
 require_relative 'lib/color'
-require_relative 'lib/ray'
-require_relative 'lib/vec3'
+require_relative 'lib/hittable'
+require_relative 'lib/hittable_list'
+require_relative 'lib/sphere'
 
 module App
   extend ColorHelper
+  extend RtweekendHelper
 
   class << self
     extend T::Sig
 
-    sig { params(center: Point3, radius: Float, r: Ray).returns(Float) }
-    def hit_sphere(center, radius, r) # rubocop:disable Metrics/AbcSize
-      oc = r.origin - center
-      a = r.direction.length_squared
-      half_b = oc.dot(r.direction)
-      c = oc.length_squared - (radius * radius)
-      discriminant = (half_b * half_b) - (a * c)
-
-      return -1.0 if discriminant.negative?
-
-      (-half_b - Math.sqrt(discriminant)) / a
-    end
-
-    sig { params(r: Ray).returns(Color) }
-    def ray_color(r) # rubocop:disable Metrics/AbcSize
-      t = hit_sphere(Point3.new(0.0, 0.0, -1.0), 0.5, r)
-      if t > 0.0
-        n = (r.at(t) - Vec3.new(0.0, 0.0, -1.0)).unit_vector
-        return 0.5.multiple_with_vec3(Color.new(n.x + 1, n.y + 1, n.z + 1))
-      end
+    sig { params(r: Ray, world: HittableList).returns(Color) }
+    def ray_color(r, world) # rubocop:disable Metrics/AbcSize
+      rec = world.hit(r, 0.0, INFINITY)
+      return 0.5.multiple_with_vec3(T.must(rec.normal) + Color.new(1.0, 1.0, 1.0)) unless rec.nil?
 
       unit_direction = r.direction.unit_vector
       a = 0.5 * (unit_direction.y + 1.0)
@@ -47,6 +35,12 @@ module App
       # Calculate the image height, and ensure that is' at least 1.
       image_height = (image_width / aspect_ratio).to_i
       image_height = 1 if image_height < 1
+
+      # World
+      world = HittableList.new
+
+      world.add(Sphere.new(Point3.new(0.0, 0.0, -1.0), 0.5))
+      world.add(Sphere.new(Point3.new(0.0, -100.5, -1.0), 100.0))
 
       # Camera
       focal_legth = 1.0
@@ -85,7 +79,7 @@ module App
           ray_direction = pixel_center - camera_center
           r = Ray.new(camera_center, ray_direction)
 
-          pixel_color = ray_color(r)
+          pixel_color = ray_color(r, world)
           write_color($stdout, pixel_color)
         end
       end
