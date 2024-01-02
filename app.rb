@@ -16,7 +16,7 @@ module App
   class << self
     extend T::Sig
 
-    sig { params(r: Ray, world: Hittable).returns(Color) }
+    sig { params(r: Ray, world: HittableList).returns(Color) }
     def ray_color(r, world) # rubocop:disable Metrics/AbcSize
       rec = world.hit(r, 0.0, INFINITY)
       return 0.5.multiple_with_vec3(T.must(rec.normal) + Color.new(1.0, 1.0, 1.0)) unless rec.nil?
