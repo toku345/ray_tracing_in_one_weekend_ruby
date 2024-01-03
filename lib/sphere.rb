@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 # typed: strict
 
-require_relative 'hittable'
-
 require 'sorbet-runtime'
+
+require_relative 'hittable'
+require_relative 'interval'
 
 class Sphere
   extend T::Sig
@@ -16,8 +17,8 @@ class Sphere
     @radius = radius
   end
 
-  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float).returns(T.nilable(HitRecord)) }
-  def hit(r, ray_tmin, ray_tmax) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  sig { params(r: Ray, ray_t: Interval).returns(T.nilable(HitRecord)) }
+  def hit(r, ray_t) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     oc = r.origin - @center
     a = r.direction.length_squared
     half_b = oc.dot(r.direction)
@@ -30,9 +31,9 @@ class Sphere
 
     # Find the nearest root that lies in the acceptable range.
     root = (-half_b - sqrtd) / a
-    if root <= ray_tmin || ray_tmax <= root
+    unless ray_t.surrounds(root)
       root = (-half_b + sqrtd) / a
-      return if root <= ray_tmin || ray_tmax <= root
+      return unless ray_t.surrounds(root)
     end
 
     rec = HitRecord.new(r.at(root), root)

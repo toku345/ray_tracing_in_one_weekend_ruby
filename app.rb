@@ -18,7 +18,7 @@ module App
 
     sig { params(r: Ray, world: HittableList).returns(Color) }
     def ray_color(r, world) # rubocop:disable Metrics/AbcSize
-      rec = world.hit(r, 0.0, INFINITY)
+      rec = world.hit(r, Interval.new(0.0, INFINITY))
       return 0.5.multiple_with_vec3(T.must(rec.normal) + Color.new(1.0, 1.0, 1.0)) unless rec.nil?
 
       unit_direction = r.direction.unit_vector

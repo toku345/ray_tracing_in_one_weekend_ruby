@@ -3,7 +3,10 @@
 
 require 'sorbet-runtime'
 
+require_relative 'rtweekend'
+require_relative 'interval'
 require_relative 'hittable'
+require_relative 'sphere'
 
 class HittableList
   extend T::Sig
@@ -29,13 +32,13 @@ class HittableList
     @objects << object
   end
 
-  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float).returns(T.nilable(HitRecord)) }
-  def hit(r, ray_tmin, ray_tmax)
-    closest_so_far = ray_tmax
+  sig { params(r: Ray, ray_t: Interval).returns(T.nilable(HitRecord)) }
+  def hit(r, ray_t)
+    closest_so_far = ray_t.max
     rec = T.let(nil, T.nilable(HitRecord))
 
     @objects.each do |object|
-      temp_rec = object.hit(r, ray_tmin, closest_so_far)
+      temp_rec = object.hit(r, Interval.new(ray_t.min, closest_so_far))
       if temp_rec
         closest_so_far = temp_rec.t
         rec = temp_rec

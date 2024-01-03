@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 # typed: false
 
+# require_relative '../../lib/rtweekend'
 require_relative '../../lib/hittable_list'
-require_relative '../../lib/sphere'
-require_relative '../../lib/ray'
 
 RSpec.describe HittableList do
   describe '#clear' do
@@ -34,7 +33,7 @@ RSpec.describe HittableList do
 
       it 'returns hit_record' do
         list = described_class.new(sphere)
-        expect(list.hit(ray, 0.0, Float::INFINITY)).to eq(expected_rec)
+        expect(list.hit(ray, Interval.new(0.0, INFINITY))).to eq(expected_rec)
       end
     end
 
@@ -53,7 +52,7 @@ RSpec.describe HittableList do
         list = described_class.new(sphere2)
         list.add(sphere)
 
-        expect(list.hit(ray, 0.0, Float::INFINITY)).to eq(expected_rec)
+        expect(list.hit(ray, Interval.new(0.0, INFINITY))).to eq(expected_rec)
       end
     end
 
@@ -63,7 +62,7 @@ RSpec.describe HittableList do
 
       it 'returns nil when the ray does not hit any objects' do
         list = described_class.new(sphere)
-        expect(list.hit(ray, 0.0, Float::INFINITY)).to be_nil
+        expect(list.hit(ray, Interval.new(0.0, INFINITY))).to be_nil
       end
     end
   end

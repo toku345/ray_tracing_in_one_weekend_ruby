@@ -47,8 +47,8 @@ end
 module Hittable
   extend T::Sig
 
-  sig { params(r: Ray, ray_tmin: Float, ray_tmax: Float).returns(T.nilable(HitRecord)) }
-  def hit(r, ray_tmin, ray_tmax) # rubocop:disable Lint/UnusedMethodArgument
+  sig { params(r: Ray, ray_t: Interval).returns(T.nilable(HitRecord)) }
+  def hit(r, ray_t) # rubocop:disable Lint/UnusedMethodArgument
     Kernel.raise 'Not implemented'
   end
 end
