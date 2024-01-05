@@ -16,4 +16,17 @@ module RtweekendHelper
   def degrees_to_radians(degrees)
     degrees * PI / 180.0
   end
+
+  sig { params(min: T.nilable(Float), max: T.nilable(Float)).returns(Float) }
+  def random_double(min = nil, max = nil)
+    if min && max
+      # Returns a random real in [min,max).
+      Random.rand(min...max)
+    elsif min.nil? && max.nil?
+      # Returns a random real in [0,1).
+      Random.rand(0.0...1.0)
+    else
+      Kernel.raise ArgumentError, 'Invalid arguments to random_double.'
+    end
+  end
 end
