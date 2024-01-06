@@ -98,7 +98,10 @@ class Camera
   sig { params(r: Ray, world: HittableList).returns(Color) }
   def ray_color(r, world) # rubocop:disable Metrics/AbcSize
     rec = world.hit(r, Interval.new(0.0, INFINITY))
-    return 0.5.multiple_with_vec3(T.must(rec.normal) + Color.new(1.0, 1.0, 1.0)) unless rec.nil?
+    if rec
+      direction = T.must(rec.normal).random_on_hemisphere
+      return 0.5.multiple_with_vec3(ray_color(Ray.new(rec.p, direction), world))
+    end
 
     unit_direction = r.direction.unit_vector
     a = 0.5 * (unit_direction.y + 1.0)

@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 # typed: strict
 
-require_relative 'float'
-
 require 'sorbet-runtime'
 
-class Vec3
+require_relative 'float'
+require_relative 'rtweekend'
+
+class Vec3 # rubocop:disable Metrics/ClassLength
   extend T::Sig
+  extend ::RtweekendHelper
 
   sig { params(e0: Float, e1: Float, e2: Float).void }
   def initialize(e0 = 0.0, e1 = 0.0, e2 = 0.0)
@@ -98,6 +100,40 @@ class Vec3
   sig { returns(Vec3) }
   def unit_vector
     self / length
+  end
+
+  sig { returns(Vec3) }
+  def random_in_unit_sphere
+    loop do
+      p = Vec3.random(-1.0, 1.0)
+      return p if p.length_squared < 1.0
+    end
+  end
+
+  sig { returns(Vec3) }
+  def random_unit_vector
+    random_in_unit_sphere.unit_vector
+  end
+
+  sig { returns(Vec3) }
+  def random_on_hemisphere
+    on_unit_sphere = random_unit_vector
+    if on_unit_sphere.dot(self) > 0.0 # In the same hemisphere as the normal
+      on_unit_sphere
+    else
+      -on_unit_sphere
+    end
+  end
+
+  sig { params(min: T.nilable(Float), max: T.nilable(Float)).returns(Vec3) }
+  def self.random(min = nil, max = nil)
+    if min && max
+      Vec3.new(random_double(min, max), random_double(min, max), random_double(min, max))
+    elsif min.nil? && max.nil?
+      Vec3.new(random_double, random_double, random_double)
+    else
+      Kernel.raise ArgumentError, 'min and max must be both nil or both not nil'
+    end
   end
 end
 

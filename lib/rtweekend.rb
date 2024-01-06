@@ -3,9 +3,6 @@
 
 require 'sorbet-runtime'
 
-require_relative 'ray'
-require_relative 'vec3'
-
 INFINITY = Float::INFINITY
 PI = 3.1415926535897932385
 
