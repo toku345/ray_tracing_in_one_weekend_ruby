@@ -30,6 +30,14 @@ class Interval
   def surrounds(x)
     @min < x && x < @max
   end
+
+  sig { params(x: Float).returns(Float) }
+  def clamp(x)
+    return @min if x < @min
+    return @max if x > @max
+
+    x
+  end
 end
 
 EMPTY = Interval.new(+INFINITY, -INFINITY)

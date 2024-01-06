@@ -12,11 +12,13 @@ class Camera
   extend T::Sig
 
   include ColorHelper
+  include RtweekendHelper
 
-  sig { params(aspect_ratio: Float, image_width: Integer).void }
-  def initialize(aspect_ratio: 1.0, image_width: 100) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  sig { params(aspect_ratio: Float, image_width: Integer, samples_per_pixel: Integer).void }
+  def initialize(aspect_ratio: 1.0, image_width: 100, samples_per_pixel: 10) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @aspect_ratio = aspect_ratio
     @image_width = image_width
+    @samples_per_pixel = samples_per_pixel
 
     @image_height = T.let((@image_width / @aspect_ratio).to_i, Integer)
     @image_height = 1 if @image_height < 1
@@ -32,7 +34,7 @@ class Camera
     viewport_u = Vec3.new(viewport_width, 0.0, 0.0)
     viewport_v = Vec3.new(0.0, -viewport_height, 0.0)
 
-    # Calculate the horizonal and vertical delta vectors from pixel to pixel.
+    # Calculate the horizontal and vertical delta vectors from pixel to pixel.
     @pixel_delta_u = T.let(viewport_u / @image_width.to_f, Vec3)
     @pixel_delta_v = T.let(viewport_v / @image_height.to_f, Vec3)
 
@@ -45,7 +47,7 @@ class Camera
   end
 
   sig { params(world: HittableList).void }
-  def render(world) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def render(world) # rubocop:disable Metrics/MethodLength
     print <<~HEADER
       P3
       #{@image_width} #{@image_height}
@@ -57,13 +59,12 @@ class Camera
       $stderr.flush
 
       @image_width.times do |i|
-        pixel_center =
-          @pixel00_loc + i.to_f.multiple_with_vec3(@pixel_delta_u) + j.to_f.multiple_with_vec3(@pixel_delta_v)
-        ray_direction = pixel_center - @center
-        r = Ray.new(@center, ray_direction)
-
-        pixel_color = ray_color(r, world)
-        write_color($stdout, pixel_color)
+        pixel_color = Color.new(0.0, 0.0, 0.0)
+        @samples_per_pixel.times do
+          r = get_ray(i, j)
+          pixel_color += ray_color(r, world)
+        end
+        write_color($stdout, pixel_color, @samples_per_pixel)
       end
     end
 
@@ -71,6 +72,28 @@ class Camera
   end
 
   private
+
+  sig { params(i: Integer, j: Integer).returns(Ray) }
+  def get_ray(i, j)
+    # Get a randomly sampled camera ray for the pixel at location i,j.
+    pixel_center =
+      @pixel00_loc + i.to_f.multiple_with_vec3(@pixel_delta_u) + j.to_f.multiple_with_vec3(@pixel_delta_v)
+    pixel_sample = pixel_center + pixel_sample_square
+
+    ray_origin = @center
+    ray_direction = pixel_sample - ray_origin
+
+    Ray.new(ray_origin, ray_direction)
+  end
+
+  sig { returns(Vec3) }
+  def pixel_sample_square
+    # Returns a random point in the square surrounding at the pixel.
+    px = -0.5 + random_double
+    py = -0.5 + random_double
+
+    px.multiple_with_vec3(@pixel_delta_u) + py.multiple_with_vec3(@pixel_delta_v)
+  end
 
   sig { params(r: Ray, world: HittableList).returns(Color) }
   def ray_color(r, world) # rubocop:disable Metrics/AbcSize
