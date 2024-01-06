@@ -14,11 +14,16 @@ class Camera
   include ColorHelper
   include RtweekendHelper
 
-  sig { params(aspect_ratio: Float, image_width: Integer, samples_per_pixel: Integer).void }
-  def initialize(aspect_ratio: 1.0, image_width: 100, samples_per_pixel: 10) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  sig do
+    params(
+      aspect_ratio: Float, image_width: Integer, samples_per_pixel: Integer, max_depth: Integer
+    ).void
+  end
+  def initialize(aspect_ratio: 1.0, image_width: 100, samples_per_pixel: 10, max_depth: 10) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @aspect_ratio = aspect_ratio
     @image_width = image_width
     @samples_per_pixel = samples_per_pixel
+    @max_depth = max_depth
 
     @image_height = T.let((@image_width / @aspect_ratio).to_i, Integer)
     @image_height = 1 if @image_height < 1
@@ -62,7 +67,7 @@ class Camera
         pixel_color = Color.new(0.0, 0.0, 0.0)
         @samples_per_pixel.times do
           r = get_ray(i, j)
-          pixel_color += ray_color(r, world)
+          pixel_color += ray_color(r, @max_depth, world)
         end
         write_color($stdout, pixel_color, @samples_per_pixel)
       end
@@ -95,12 +100,15 @@ class Camera
     px.multiple_with_vec3(@pixel_delta_u) + py.multiple_with_vec3(@pixel_delta_v)
   end
 
-  sig { params(r: Ray, world: HittableList).returns(Color) }
-  def ray_color(r, world) # rubocop:disable Metrics/AbcSize
+  sig { params(r: Ray, depth: Integer, world: HittableList).returns(Color) }
+  def ray_color(r, depth, world) # rubocop:disable Metrics/AbcSize
+    # If we've exceeded the ray bounce limit, no more light is gathered.
+    return Color.new(0.0, 0.0, 0.0) if depth <= 0
+
     rec = world.hit(r, Interval.new(0.0, INFINITY))
     if rec
       direction = T.must(rec.normal).random_on_hemisphere
-      return 0.5.multiple_with_vec3(ray_color(Ray.new(rec.p, direction), world))
+      return 0.5.multiple_with_vec3(ray_color(Ray.new(rec.p, direction), depth - 1, world))
     end
 
     unit_direction = r.direction.unit_vector
