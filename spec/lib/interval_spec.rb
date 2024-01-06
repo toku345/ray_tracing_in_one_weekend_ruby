@@ -43,4 +43,19 @@ RSpec.describe Interval do
       end
     end
   end
+
+  describe '#clamp' do
+    context 'when the value is in the interval' do
+      it 'returns the value' do
+        expect(described_class.new(0.0, 1.0).clamp(0.5)).to eq(0.5)
+      end
+    end
+
+    context 'when the value is not in the interval' do
+      it 'returns the closest endpoint' do # rubocop:disable RSpec/MultipleExpectations
+        expect(described_class.new(0.0, 1.0).clamp(-0.1)).to eq(0.0)
+        expect(described_class.new(0.0, 1.0).clamp(1.1)).to eq(1.0)
+      end
+    end
+  end
 end

@@ -22,7 +22,11 @@ module App
       world.add(Sphere.new(Point3.new(0.0, 0.0, -1.0), 0.5))
       world.add(Sphere.new(Point3.new(0.0, -100.5, -1.0), 100.0))
 
-      cam = Camera.new(aspect_ratio: 16.0 / 9.0, image_width: 400)
+      cam = Camera.new(
+        aspect_ratio: 16.0 / 9.0,
+        image_width: 400,
+        samples_per_pixel: 100
+      )
 
       cam.render(world)
     end
