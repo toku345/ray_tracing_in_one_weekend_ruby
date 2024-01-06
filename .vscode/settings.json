@@ -8,5 +8,6 @@
       "cwd": "${workspaceFolder}",
       "command": ["bundle", "exec", "srb", "typecheck", "--lsp"]
     }
-  ]
+  ],
+  "cSpell.words": ["Rtweekend", "Scanlines"]
 }
