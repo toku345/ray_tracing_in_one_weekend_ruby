@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rubocop', '~> 1.59'
+gem 'rubocop', '~> 1.60'
 gem 'rubocop-rspec', '~> 2.25', require: false
 
 gem 'sorbet', group: :development
