@@ -9,7 +9,7 @@ gem 'sorbet', group: :development
 gem 'sorbet-runtime'
 gem 'tapioca', require: false, group: :development
 
-gem 'rspec', '~> 3.12'
+gem 'rspec', '~> 3.13'
 gem 'rspec-sorbet', '~> 1.9'
 
 gem 'guard', '~> 2.18'
